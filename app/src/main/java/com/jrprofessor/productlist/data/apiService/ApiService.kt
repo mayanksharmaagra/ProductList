@@ -7,11 +7,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    // https://fakestoreapi.com/products?limit={LIMIT}
-// https://fakestoreapi.com/products/{id}
     @GET("products")
-    fun productList(@Query("limit") limit: Int): Response<List<ProductModel>>
+    suspend fun productList(@Query("limit") limit: Int = 20): Response<List<ProductModel>>
 
-    @GET("products")
-    fun productDetails(@Path("id") id: String): Response<ProductModel>
+    @GET("products/{id}")
+    suspend fun productDetails(@Path("id") id: String): Response<ProductModel>
 }

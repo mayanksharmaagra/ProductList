@@ -2,26 +2,27 @@ package com.jrprofessor.productlist.data.repository
 
 import com.jrprofessor.productlist.data.apiService.ApiService
 import com.jrprofessor.productlist.data.model.ProductModel
-import kotlin.collections.emptyList
+import javax.inject.Inject
 
-class ProductRepositoryImpl(val apiService: ApiService) : ProductRepository {
+class ProductRepositoryImpl @Inject constructor(
+    private val apiService: ApiService
+) : ProductRepository {
+
     override suspend fun getProductList(limit: Int): List<ProductModel> {
         val response = apiService.productList(limit)
-        return if (response.isSuccessful) {
-            response.body()!!
+        if (response.isSuccessful && response.body() != null) {
+            return response.body()!!
         } else {
-            emptyList()
+            throw Exception("Failed to load products: ${response.message()}")
         }
     }
 
     override suspend fun productDetailsById(id: String): ProductModel {
         val response = apiService.productDetails(id)
-//        return if (response.isSuccessful) {
-//            response.body()
-//        } else {
-//            emptyList()
-//        }
-        return ProductModel()
+        if (response.isSuccessful && response.body() != null) {
+            return response.body()!!
+        } else {
+            throw Exception("Failed to load product details: ${response.message()}")
+        }
     }
-
 }
